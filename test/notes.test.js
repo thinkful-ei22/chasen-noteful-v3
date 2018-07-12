@@ -17,7 +17,7 @@ chai.use(chaiHttp);
 describe('Notes API', function () {
 
   before(function () {
-    return mongoose.connect(TEST_MONGODB_URI)  //{ useNewUrlParser: true}????
+    return mongoose.connect(TEST_MONGODB_URI, { useNewUrlParser: true})
       .then(() => mongoose.connection.db.dropDatabase());
   });
 
