@@ -30,16 +30,16 @@ router.get('/', (req, res, next) => {
 });
 
 /* ========== GET/READ A SINGLE ITEM ========== */
-router.get('/:id', (req, res, next) => {
-  const { id } = req.params;
+router.get('/:_id', (req, res, next) => {
+  const { _id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
     const err = new Error('The `id` is not valid');
     err.status = 400;
     return next(err);
   }
 
-  Note.findById(id)
+  Note.findById(_id)
     .then(result => {
       if (result) {
         res.json(result);
