@@ -2,11 +2,5 @@ language: node_js
 node_js: node
 services:
 - mongodb
-deploy:
-  provider: heroku
-  api_key:
-    secure: 4rWCgmbH8rQmiDFOfb7VroAGQqnqroMru8OLBNeqNfw8JOp8HD8YgDzWpTxxsfEFymVtVX9xPjvftx+11A2HMofYR2Sboao7a2/DpOnlW7z6x1+4Jn39sGZ4cBkw3ymq0KodFDr64v3diKBGmrIu/cxi7wd1xyaSV9gb0KbXYmg9OwpJH2nI3XPkSKiWmw/6HIFw2OKWUUIElE8d+9oVTajOr5Py+L/OdOeyJEs72sWgicBvojcwDhX4aWnjBL3xytN+ShkVBMkeid8xb4uHdEOYp6JFdGxNthsKxJ2lh7t/kPqXGAf73fCxtvuHpIC3a0lw6r7oyXyCMe/OVaUUVj1HDd5ve7WOcOm/k5Ari9jzRYHTRidTF+/o9Nkb8GZTPo85Mcdcg6T/cgd8zuiPEc1u2dpXKQZiYJd/m/P0tVK5Z1Khh/qEiAIxlpdHkR7wCvUKh1o39FBFGcpfq+8rhrqaUvWzSXCzAAgf0jqSw6iGeDB2xVXkevLOa9j67fzE3Nc8Z+c8LPnEZLhiyon/qoUcKpzEq5VWjLx0Ly+OFxcZmdQI9E6S5Maat77Heo37beEWmRfoJlAtQVd8AiYXNXFd0cnXBsQbZzpoUCndycOx/UbblrtMPCZNaS4r4sm2rccxaCknyXpVqLVuaw3T3r92Lgd03JZuspaN7LXjVvw=
-  app: chasen-noteful-v3
-  on:
-    repo: thinkful-ei22/chasen-noteful-v3
+
  
