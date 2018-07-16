@@ -7,14 +7,14 @@ const Note = require('../models/note');
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
-  //   const searchTerm = 'lady gaga';
-  //   let filter = {};
+    // const searchTerm = 'lady gaga';
+    // let filter = {};
 
-  //   if (searchTerm) {
-  //     const regex = new RegExp(searchTerm, 'i');
-  //     filter.$or = [{'title': regex}, {'content': regex}];
-  //   }
-  //   return Note.find(filter).sort({ updatedAt: 'desc' });
+    // if (searchTerm) {
+    //   const regex = new RegExp(searchTerm, 'i');
+    //   filter.$or = [{'title': regex}, {'content': regex}];
+    // }
+    // return Note.find(filter).sort({ updatedAt: 'desc' });
 
     /*Find/Search for notes using Note.find*/
     // return Note.findById('000000000000000000000001')

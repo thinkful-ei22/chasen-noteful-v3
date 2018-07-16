@@ -8,21 +8,29 @@ const app = require('../server');
 const { TEST_MONGODB_URI } = require('../config');
 
 const Note = require('../models/note');
+const Folder = require('../models/folder');
 
 const seedNotes = require('../db/seed/notes');
+const seedFolders = require('../db/seed/folders');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-describe('Notes API', function () {
+describe('Notes Test', function () {
 
   before(function () {
-    return mongoose.connect(TEST_MONGODB_URI, { useNewUrlParser: true})
+    return mongoose.connect(TEST_MONGODB_URI)
       .then(() => mongoose.connection.db.dropDatabase());
   });
 
   beforeEach(function () {
-    return Note.insertMany(seedNotes);
+    return Promise.all([
+      Note.insertMany(seedNotes),
+      Folder.insertMany(seedFolders)
+    ])
+      .then(() => {
+        return Note.createIndexes();
+      });
   });
 
   afterEach(function () {
@@ -60,7 +68,7 @@ describe('Notes API', function () {
           expect(res.body).to.have.length(data.length);
           res.body.forEach(function (item, i) {
             expect(item).to.be.a('object');
-            expect(item).to.include.all.keys('id', 'title', 'createdAt', 'updatedAt');
+            expect(item).to.include.all.keys('id', 'title', 'createdAt', 'updatedAt', 'folderId');
             expect(item.id).to.equal(data[i].id);
             expect(item.title).to.equal(data[i].title);
             expect(item.content).to.equal(data[i].content);
@@ -88,13 +96,31 @@ describe('Notes API', function () {
           expect(res.body).to.have.length(1);
           res.body.forEach(function (item, i) {
             expect(item).to.be.a('object');
-            expect(item).to.include.all.keys('id', 'title', 'createdAt', 'updatedAt');
+            expect(item).to.include.all.keys('id', 'title', 'createdAt', 'updatedAt', 'folderId');
             expect(item.id).to.equal(data[i].id);
             expect(item.title).to.equal(data[i].title);
             expect(item.content).to.equal(data[i].content);
             expect(new Date(item.createdAt)).to.eql(data[i].createdAt);
             expect(new Date(item.updatedAt)).to.eql(data[i].updatedAt);
           });
+        });
+    });
+
+    it('should return correct search results for a folderId query', function () {
+      let data;
+      return Folder.findOne()
+        .then((_data) => {
+          data = _data;
+          return Promise.all([
+            Note.find({ folderId: data.id }),
+            chai.request(app).get(`/api/notes?folderId=${data.id}`)
+          ]);
+        })
+        .then(([data, res]) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.be.a('array');
+          expect(res.body).to.have.length(data.length);
         });
     });
 
@@ -129,7 +155,7 @@ describe('Notes API', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.an('object');
-          expect(res.body).to.have.all.keys('id', 'title', 'content', 'createdAt', 'updatedAt');
+          expect(res.body).to.have.all.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId');
           expect(res.body.id).to.equal(data.id);
           expect(res.body.title).to.equal(data.title);
           expect(res.body.content).to.equal(data.content);
@@ -162,8 +188,8 @@ describe('Notes API', function () {
 
     it('should create and return a new item when provided valid data', function () {
       const newItem = {
-        'title': 'The best article about cats ever!',
-        'content': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...'
+        'title': 'The new post article about dogs!',
+        'content': 'Lorem...woof'
       };
       let res;
       return chai.request(app)
@@ -175,7 +201,7 @@ describe('Notes API', function () {
           expect(res).to.have.header('location');
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body).to.have.all.keys('id', 'title', 'content', 'createdAt', 'updatedAt');
+          expect(res.body).to.have.all.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId');
           return Note.findById(res.body.id);
         })
         .then(data => {
@@ -189,7 +215,7 @@ describe('Notes API', function () {
 
     it('should return an error when missing "title" field', function () {
       const newItem = {
-        'content': 'Lorem ipsum dolor sit amet, sed do eiusmod tempor...'
+        'content': 'New Item Content'
       };
       return chai.request(app)
         .post('/api/notes')
@@ -208,7 +234,7 @@ describe('Notes API', function () {
 
     it('should update the note when provided valid data', function () {
       const updateItem = {
-        'title': 'What about dogs?!',
+        'title': 'dogs title now!',
         'content': 'woof woof'
       };
       let data;
