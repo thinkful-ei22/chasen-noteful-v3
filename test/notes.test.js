@@ -29,11 +29,11 @@ describe('Notes Test', function () {
     return Promise.all([
       Note.insertMany(seedNotes),
       Folder.insertMany(seedFolders),
-      Folder.createIndexes()
+      Folder.createIndexes(),
 
       Tag.insertMany(seedTags),
       Tag.createIndexes()
-    ])
+    ]);
   });
 
   afterEach(function () {
